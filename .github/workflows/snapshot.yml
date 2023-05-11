@@ -14,4 +14,15 @@ jobs:
 
       - name: Deploy
         run: |
-          echo "Deploying..."
+          # Find all Javascript and Typescript files in the pull request
+          code_files=$(git diff --name-only ${{ github.event.pull_request.base.ref }}...${{ github.event.pull_request.head.ref }} -- '*.js' '*.ts')
+          # Output list of files being checked
+          echo "Checking the following files:"
+          echo "$code_files"
+          # Check for the presence of a state machine in each file
+          for file in $code_files; do
+            if grep -q "createMachine" "$file"; then
+              echo "State machine found in $file"
+              exit 1
+            fi
+          done
