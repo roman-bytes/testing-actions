@@ -14,8 +14,8 @@ jobs:
 
       - name: Deploy
         run: |
-          ${{ github.event.issue.pull_request }}
-
+          code_files=${{ github.event.issue.pull_request }}
+          echo "$code_files"
 
 #          # Find all Javascript and Typescript files in the pull request
 #          code_files=$(git diff --name-only ${{ github.event.issue.pull_request.base.ref }}...${{ github.event.issue.pull_request.head.ref }} -- '*.js' '*.ts')
