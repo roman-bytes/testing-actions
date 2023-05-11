@@ -14,8 +14,16 @@ jobs:
 
       - name: Deploy
         run: |
-          code_files=${{ toJSON(github.base_ref) }}
-          echo "$code_files"
+          code_files1=${{ toJSON(github.head_ref) }}
+          echo "$code_files1"
+          code_files2=${{ toJSON(github.event) }}
+          echo "$code_files2"
+          code_files3=${{ toJSON(github.ref) }}
+          echo "$code_files3"
+          code_files4=${{ toJSON(github.sha) }}
+          echo "$code_files4"
+          code_files5=${{ toJSON(github.event.issue.pull_request.base) }}
+          echo "$code_files5"
 
 #          # Find all Javascript and Typescript files in the pull request
 #          code_files=$(git diff --name-only ${{ github.event.pull_request.base.ref }}...${{ github.event.pull_request.head.ref }} -- '*.js' '*.ts')
