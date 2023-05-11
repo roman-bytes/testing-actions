@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Deploy
         run: |
@@ -22,7 +24,7 @@ jobs:
           echo "$code_files3"
           code_files4=${{ toJSON(github.base_ref) }}
           echo "$code_files4"
-          code_files5=${{ toJSON(github.workflow_ref) }}
+          code_files5=${{ toJSON(github.ref) }}
           echo "$code_files5"
 
 #          # Find all Javascript and Typescript files in the pull request
