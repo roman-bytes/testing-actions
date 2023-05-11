@@ -14,11 +14,11 @@ jobs:
 
       - name: Deploy
         run: |
-          code_files1=${{ toJSON(github.head_ref) }}
+          code_files1=${{ toJSON(github.event.pull_request) }}
           echo "$code_files1"
-          code_files2=${{ toJSON(github.action_ref) }}
+          code_files2=${{ toJSON(github.event.pull_request.base) }}
           echo "$code_files2"
-          code_files3=${{ toJSON(github.ref) }}
+          code_files3=${{ toJSON(github.event.pull_request.head) }}
           echo "$code_files3"
           code_files4=${{ toJSON(github.base_ref) }}
           echo "$code_files4"
