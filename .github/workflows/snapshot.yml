@@ -21,8 +21,7 @@ jobs:
 
       - name: Deploy
         run: |
-          code_files1=${{ toJSON($BRANCH_NAME) }}
-          echo "$code_files1"
+          echo "$BRANCH_NAME"
           code_files2=${{ toJSON(github.event.pull_request.base) }}
           echo "$code_files2"
           code_files3=${{ toJSON(github.event.pull_request.head) }}
