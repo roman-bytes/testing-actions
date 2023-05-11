@@ -14,7 +14,7 @@ jobs:
 
       - name: Deploy
         run: |
-          code_files=${{ toJSON(github.event.pull_request.base.ref) }}
+          code_files=${{ toJSON(github.base_ref) }}
           echo "$code_files"
 
 #          # Find all Javascript and Typescript files in the pull request
