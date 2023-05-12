@@ -1,42 +1,29 @@
-name: "Deploy on Comment"
-
+name: Check for state machine comment
 on:
-  push: {}
   issue_comment:
     types: [created]
-
 jobs:
-  deploy:
+  run-on-comment:
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/deploy')
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: refs/pull/${{ github.event.issue.number }}/head
-      - name: Deploy
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Check comment for state machine
         env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "$BRANCH_NAME"
-          code_files2=${{ toJSON(github.event.pull_request.base) }}
-          echo "$code_files2"
-          code_files3=${{ toJSON(github.event.pull_request.head) }}
-          echo "$code_files3"
-          code_files4=${{ toJSON(github.base_ref) }}
-          echo "$code_files4"
-          code_files5=${{ toJSON(github.ref) }}
-          echo "$code_files5"
-
-#          # Find all Javascript and Typescript files in the pull request
-#          code_files=$(git diff --name-only ${{ github.event.pull_request.base.ref }}...${{ github.event.pull_request.head.ref }} -- '*.js' '*.ts')
-#          # Output list of files being checked
-#          echo "Checking the following files:"
-#          echo "$code_files"
-#          # Check for the presence of a state machine in each file
-#          for file in $code_files; do
-#            if grep -q "createMachine" "$file"; then
-#              echo "State machine found in $file"
-#              exit 1
-#            fi
-#          done
+          # Check if comment contains "Create state machine screenshot"
+          if [[ "${{ github.event.comment.body }}" =~ "Create state machine screenshot" ]]; then
+            # Find all JavaScript and TypeScript files in the issue
+            code_files=$(git diff --name-only origin/${{ github.event.issue.number }} -- '*.js' '*.ts')
+            # Output list of files being checked
+            echo "Checking the following files:"
+            echo "$code_files"
+            # Check for the presence of a state machine in each file
+            for file in $code_files; do
+              if grep -q "createMachine" "$file"; then
+                echo "State machine found in $file"
+                exit 1
+              fi
+            done
+          fi
