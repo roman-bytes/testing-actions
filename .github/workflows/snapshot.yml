@@ -19,6 +19,8 @@ jobs:
           if [[ "${{ github.event.comment.body }}" =~ "Create state machine screenshot" ]]; then
             # Find all JavaScript and TypeScript files in the issue
             code_files=$(git diff --name-only origin/main...HEAD -- '*.js' '*.ts')
+            head_check=$(HEAD)
+            echo "$head_check"
             # Output list of files being checked
             echo "Checking the following files:"
             echo "$code_files"
