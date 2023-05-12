@@ -11,17 +11,22 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
-      - name: Check for state machine
+      - name: Check comment for state machine
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Find all JavaScript files in the pull request
-          code_files=$(jq -r '.pull_request.files[] | select(.filename | endswith(".js")) | .filename' "$GITHUB_EVENT_PATH")
-          # Output list of files being checked
-          echo "Checking the following files:"
-          echo "$code_files"
-          # Check for the presence of a state machine in each file
-          for file in $code_files; do
-            if grep -q "createMachine" "$file"; then
-              echo "State machine found in $file"
-              exit 1
-            fi
-          done
+          # Check if comment contains "Create state machine screenshot"
+          if [[ "${{ github.event.comment.body }}" =~ "Create state machine screenshot" ]]; then
+            # Find all JavaScript and TypeScript files in the issue
+            code_files=$(git diff --name-only origin/main...HEAD -- '*.js' '*.ts')
+            # Output list of files being checked
+            echo "Checking the following files:"
+            echo "$code_files"
+            # Check for the presence of a state machine in each file
+            for file in $code_files; do
+              if grep -q "createMachine" "$file"; then
+                echo "State machine found in $file"
+                exit 1
+              fi
+            done
+          fi
