@@ -9,7 +9,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
       - name: Check comment for state machine
         env:
