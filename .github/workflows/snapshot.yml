@@ -5,9 +5,6 @@ on:
   issue_comment:
     types: [created]
 
-env:
-  BRANCH_NAME: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,11 +12,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Checkout Pull Request
-        run: hub pr checkout ${{ github.event.issue.number }}
+        with:
+          ref: refs/pull/${{ github.event.issue.number }}/head
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Deploy
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
         run: |
           echo "$BRANCH_NAME"
           code_files2=${{ toJSON(github.event.pull_request.base) }}
