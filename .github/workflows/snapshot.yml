@@ -9,6 +9,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           ref: ${{ github.event.issue.pull_request.head.ref }}
       - name: List files
         run: git diff --name-only HEAD~1
