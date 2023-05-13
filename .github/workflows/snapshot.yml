@@ -8,17 +8,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Debug Event Type
-        run: echo $GITHUB_EVENT_NAME
-
-      - name: Check comment for state machine
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Files changed in the current branch:"
-          git diff --name-only ${{ github.event.issue.pull_request.base.sha }}...${{ github.event.issue.pull_request.head.sha }}
-
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref }}
+      - name: List files
+        run: git diff --name-only HEAD~1
 
 #        run: |
 #          # Check if comment contains "Create state machine screenshot"
