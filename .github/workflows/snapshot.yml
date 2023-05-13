@@ -8,15 +8,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: List changed files
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref }}
+      - name: Get changed files
         run: |
-          # Get the current pull request number from the issue_comment event payload
-          pr_number=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
-          # Fetch the pull request data and get the branch name
-          branch_name=$(curl -s https://api.github.com/repos/${{ github.repository }}'/pulls/'$pr_number | jq --raw-output '.head.ref')
-          # List the changed files in the branch
-          git diff --name-only $branch_name
-          
+          files=$(git diff --name-only HEAD~1)
+          echo "Changed files in branch ${{ github.event.issue.pull_request.head.ref }}:"
+          echo "$files"
 #        run: |
 #          # Check if comment contains "Create state machine screenshot"
 #          if [[ "${{ github.event.comment.body }}" =~ "Create state machine screenshot" ]]; then
