@@ -8,20 +8,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.repository.default_branch }}
-          fetch-depth: 0
-
-      - name: Get PR branch name
-        id: branch_name
-        run: echo "::set-output name=branch_name::$(jq -r '.issue.pull_request.head.ref' $GITHUB_EVENT_PATH)"
-
       - name: List changed files
         run: |
-          echo "Changed files in branch ${{ steps.branch_name.outputs.branch_name }}:"
-          git fetch origin ${{ steps.branch_name.outputs.branch_name }}
-          git diff --name-only origin/${{ steps.branch_name.outputs.branch_name }}
-
+          # Get the current pull request number from the issue_comment event payload
+          pr_number=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
+          # Fetch the pull request data and get the branch name
+          branch_name=$(curl -s https://api.github.com/repos/${{ github.repository }}'/pulls/'$pr_number | jq --raw-output '.head.ref')
+          # List the changed files in the branch
+          git diff --name-only $branch_name
+          
 #        run: |
 #          # Check if comment contains "Create state machine screenshot"
 #          if [[ "${{ github.event.comment.body }}" =~ "Create state machine screenshot" ]]; then
