@@ -6,11 +6,13 @@ jobs:
   run-on-comment:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      # need this first step to init the git repo
+      - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.issue.pull_request.head.sha }}
-
+      - name: Checkout Pull Request
+        run: hub pr checkout ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Find changed files
         run: |
           # Find all JavaScript and TypeScript files in the pull request
@@ -18,7 +20,7 @@ jobs:
           # Output list of files being checked
           echo "Checking the following files:"
           echo "$code_files"
-          
+
 #        run: |
 #          # Check if comment contains "Create state machine screenshot"
 #          if [[ "${{ github.event.comment.body }}" =~ "Create state machine screenshot" ]]; then
