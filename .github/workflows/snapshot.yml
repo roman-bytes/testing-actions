@@ -8,9 +8,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
+
+      - name: Debug Event Type
+        run: echo $GITHUB_EVENT_NAME
+
       - name: Check comment for state machine
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
